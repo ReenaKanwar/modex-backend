@@ -17,7 +17,7 @@ app.use('/api/trips', tripsRouter);
 app.use('/api/bookings', bookingsRouter);
 
 // start expiry worker (marks old PENDING as FAILED)
-require('./workers/expiryWorker')();
+require('../workers/expiryWorker')();
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`TeleBus backend running on ${PORT}`));
