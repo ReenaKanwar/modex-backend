@@ -1,0 +1,26 @@
+{
+  "name": "bus-ticket",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "migrate": "psql \"$DATABASE_URL\" -f migrations/init.sql",
+    "seed": "node src/scripts/seed.js",
+    "test:concurrency": "node src/scripts/concurrency-test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "pg": "^8.16.3",
+    "react-router-dom": "^7.10.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
