@@ -1,23 +1,42 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
 
-const pool = require('./db'); // ensures DB module loads
-const busesRouter = require('./routes/buses');
-const tripsRouter = require('./routes/buses');
-const bookingsRouter = require('./routes/bookings');
+const pool = require("./db");
+
+const busesRouter = require("./routes/buses");
+const tripsRouter = require("./routes/trips");
+const bookingsRouter = require("./routes/bookings");
 
 const app = express();
+
+/* ---------------- MIDDLEWARE ---------------- */
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-app.use('/api/buses', busesRouter);
-app.use('/api/trips', tripsRouter);
-app.use('/api/bookings', bookingsRouter);
+/* ---------------- ROUTES ---------------- */
+app.use("/api/buses", busesRouter);
+app.use("/api/trips", tripsRouter);
+app.use("/api/bookings", bookingsRouter);
 
-// start expiry worker (marks old PENDING as FAILED)
-require('../workers/expiryWorker')();
+/* ---------------- HEALTH CHECK ---------------- */
+app.get("/", (req, res) => {
+  res.send("TeleBus Backend API is running 🚍");
+});
 
+/* ---------------- DB CONNECTION CHECK ---------------- */
+pool
+  .query("SELECT 1")
+  .then(() => console.log("PostgreSQL connected ✅"))
+  .catch((err) => console.error("PostgreSQL connection failed ❌", err));
+
+/* ---------------- WORKER ---------------- */
+require("./workers/expiryworker")(); 
+// ⚠️ filename case should match exactly
+
+/* ---------------- SERVER ---------------- */
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`TeleBus backend running on ${PORT}`));
+
+app.listen(PORT, () => {
+  console.log(`🚀 TeleBus backend running on port ${PORT}`);
+});
